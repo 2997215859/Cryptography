@@ -235,51 +235,45 @@ string MainWindow::getHexHash(string message){
 void MainWindow::on_pushButton_crypto_clicked()
 {
 
+    /**
+    ** First part: encryption
+    */
+
     AutoSeededRandomPool prng;
 
     prng.GenerateBlock(key, sizeof(key));
 
     string message = "ECB Mode Test";
-    string cipher, encoded, recovered;
+    string encoded, recovered;
 
+    ////////////////////////////////////////////////
+    // digest
     string digest = getHexHash(message);
 
-    ////////////////////////////////////////////////
-    // Setup
-    string message2 = digest, signature, recovered2;
 
     ////////////////////////////////////////////////
-    // Sign and Encode
+    // signature
+    string signature;
     RSASS<PSSR, SHA1>::Signer signer(keyPairA.first);
+    {
+        StringSource ss1(signature, true,
+            new SignerFilter(prng, signer,
+                new StringSink(signature),
+                true // putMessage for recovery
+           ) // SignerFilter
+        ); // StringSource
+        // generate n bytes's signature, n should equal to the bytes len of rsa mod number, in my program, it's 3072 / 8
+        cout << "signature len: " << signature.size() << endl;
+    }
 
-    StringSource ss1(message2, true,
-        new SignerFilter(prng, signer,
-            new StringSink(signature),
-            true // putMessage for recovery
-       ) // SignerFilter
-    ); // StringSource
+    // plain composed of message and signature, the plain text will be encrypted and then send out
+    string plain = message + signature;
 
     ////////////////////////////////////////////////
-    // Verify and Recover
-    RSASS<PSSR, SHA1>::Verifier verifier(keyPairA.second);
-
-    StringSource ss2(signature, true,
-        new SignatureVerificationFilter(
-            verifier,
-            new StringSink(recovered2),
-            SignatureVerificationFilter::THROW_EXCEPTION | SignatureVerificationFilter::PUT_MESSAGE
-       ) // SignatureVerificationFilter
-    ); // StringSource
-
-    cout << "Verified signature on message" << endl;
-    cout << "recovered digest: " << recovered2 << endl;
-
-    string plain = message + digest;
-
+    // encrypt plain text by AES and get the cipher
+    string cipher;
     try
     {
-        cout << "plain text: " << plain << endl;
-
         ECB_Mode< AES >::Encryption e;
         e.SetKey(key, sizeof(key));
 
@@ -298,46 +292,68 @@ void MainWindow::on_pushButton_crypto_clicked()
         exit(1);
     }
 
+    ///////////////////////////////////////////////
+    // Encrypt the symmetric key K with the public key of B
+    std::string encryptedKey;
+//    string keyStr((char*)key, sizeof(key));
+    string keyStr("RSA Encryption");
+    {
+        RSAES_OAEP_SHA_Encryptor e(keyPairB.second);
+        StringSource ss1(key, sizeof(key), true,
+            new PK_EncryptorFilter( prng, e,
+                new StringSink(encryptedKey)
+            ) // PK_EncryptorFilter
+         ); // StringSource
+    }
 
+    ////////////////////////////////////////////////
+    // send text
+    string sendText = cipher + encryptedKey;
 
+    /**
+    ** Second part: decryption
+    */
 
-//    /*********************************\
-//    \*********************************/
+    ////////////////////////////////////////////////
+    // Decrypt to get the symmetric key K with the private key of B
+    byte recoveredKey[AES::DEFAULT_KEYLENGTH];
+    {
+        string recovered;
+        RSAES_OAEP_SHA_Decryptor d(keyPairB.first);
+        StringSource ss2( encryptedKey, true,
+            new PK_DecryptorFilter( prng, d,
+                new StringSink(recovered)
+            ) // PK_DecryptorFilter
+         ); // StringSource
+        strncpy((char*)recoveredKey,recovered.c_str(),recovered.length());
+    }
 
-//    // Pretty print
-//    encoded.clear();
-//    StringSource(cipher, true,
-//        new HexEncoder(
-//            new StringSink(encoded)
-//        ) // HexEncoder
-//    ); // StringSource
-//    cout << "cipher text: " << encoded << endl;
+    string recoveredPlain;
+    string recoveredMsg;
+    string recoveredSignature;
+    ////////////////////////////////////////////////
+    // Decrypt to get the message and encrypted digest with symmetric key K
+    try
+    {
+        ECB_Mode< AES >::Decryption d;
+        d.SetKey(key, sizeof(key));
 
-//    /*********************************\
-//    \*********************************/
+        // The StreamTransformationFilter removes
+        //  padding as required.
+        StringSource s(cipher, true,
+            new StreamTransformationFilter(d,
+                new StringSink(recoveredPlain)
+            ) // StreamTransformationFilter
+        ); // StringSource
 
-//    try
-//    {
-//        ECB_Mode< AES >::Decryption d;
-//        d.SetKey(key, sizeof(key));
-
-//        // The StreamTransformationFilter removes
-//        //  padding as required.
-//        StringSource s(cipher, true,
-//            new StreamTransformationFilter(d,
-//                new StringSink(recovered)
-//            ) // StreamTransformationFilter
-//        ); // StringSource
-
-//        cout << "recovered text: " << recovered << endl;
-//    }
-//    catch(const CryptoPP::Exception& e)
-//    {
-//        cerr << e.what() << endl;
-//        exit(1);
-//    }
-
-    /*********************************\
-    \*********************************/
-
+        assert(recoveredPlain == plain);
+        recoveredMsg = recoveredPlain.substr(0, recoveredPlain.size() - 3072/8);
+        recoveredSignature = recoveredPlain.substr(recoveredPlain.size() - 3072/8 + 1);
+        cout << "recoveredMsg: " << recoveredMsg << endl;
+    }
+    catch(const CryptoPP::Exception& e)
+    {
+        cerr << e.what() << endl;
+        exit(1);
+    }
 }
