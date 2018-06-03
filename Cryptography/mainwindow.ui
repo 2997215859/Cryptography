@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="pushButton_gen_a">
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -27,7 +27,7 @@
      <string>A公私钥密钥生成</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_2">
+   <widget class="QPushButton" name="pushButton_gen_b">
     <property name="geometry">
      <rect>
       <x>440</x>
@@ -40,7 +40,7 @@
      <string>B公私钥密钥生成</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_3">
+   <widget class="QPushButton" name="pushButton_gen_k">
     <property name="geometry">
      <rect>
       <x>860</x>
@@ -335,7 +335,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEdit_7">
+   <widget class="QTextEdit" name="textEdit_a_pu">
     <property name="geometry">
      <rect>
       <x>180</x>
@@ -345,7 +345,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEdit_10">
+   <widget class="QTextEdit" name="textEdit_a_pr">
     <property name="geometry">
      <rect>
       <x>180</x>
@@ -355,7 +355,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEdit_13">
+   <widget class="QTextEdit" name="textEdit_b_pu">
     <property name="geometry">
      <rect>
       <x>600</x>
@@ -365,7 +365,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEdit_14">
+   <widget class="QTextEdit" name="textEdit_b_pr">
     <property name="geometry">
      <rect>
       <x>600</x>
@@ -375,7 +375,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEdit_15">
+   <widget class="QTextEdit" name="textEdit_k">
     <property name="geometry">
      <rect>
       <x>1020</x>
