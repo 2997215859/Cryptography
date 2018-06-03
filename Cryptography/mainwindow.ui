@@ -207,7 +207,7 @@
      <string>原始消息</string>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEdit_6">
+   <widget class="QTextEdit" name="textEdit_recoveredMessage">
     <property name="geometry">
      <rect>
       <x>150</x>
@@ -217,7 +217,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEdit_8">
+   <widget class="QTextEdit" name="textEdit_recoveredKey">
     <property name="geometry">
      <rect>
       <x>150</x>
@@ -240,7 +240,7 @@
      <string>解密对称密钥K</string>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEdit_9">
+   <widget class="QTextEdit" name="textEdit_recoveredSignature">
     <property name="geometry">
      <rect>
       <x>150</x>
@@ -266,20 +266,20 @@
    <widget class="QLabel" name="label_16">
     <property name="geometry">
      <rect>
-      <x>540</x>
+      <x>490</x>
       <y>640</y>
-      <width>71</width>
+      <width>221</width>
       <height>41</height>
      </rect>
     </property>
     <property name="text">
-     <string>哈希结果</string>
+     <string>根据解密消息再次计算哈希</string>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEdit_11">
+   <widget class="QTextEdit" name="textEdit_recoveredDigest">
     <property name="geometry">
      <rect>
-      <x>630</x>
+      <x>730</x>
       <y>760</y>
       <width>241</width>
       <height>81</height>
@@ -289,20 +289,20 @@
    <widget class="QLabel" name="label_17">
     <property name="geometry">
      <rect>
-      <x>540</x>
+      <x>490</x>
       <y>740</y>
-      <width>71</width>
+      <width>201</width>
       <height>41</height>
      </rect>
     </property>
     <property name="text">
-     <string>哈希结果</string>
+     <string>从签名中解密得到的哈希</string>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEdit_12">
+   <widget class="QTextEdit" name="textEdit_recaculatedDigest">
     <property name="geometry">
      <rect>
-      <x>630</x>
+      <x>730</x>
       <y>670</y>
       <width>241</width>
       <height>81</height>
@@ -398,7 +398,7 @@
      <string>加密</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_gen_a_3">
+   <widget class="QPushButton" name="pushButton_decrypto">
     <property name="geometry">
      <rect>
       <x>20</x>

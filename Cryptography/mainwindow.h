@@ -42,6 +42,8 @@ private slots:
 
     void on_pushButton_crypto_clicked();
 
+    void on_pushButton_decrypto_clicked();
+
 private:
     Ui::MainWindow *ui;
 
@@ -56,6 +58,10 @@ private:
 
     byte key[AES::DEFAULT_KEYLENGTH];
 
+    // need send
+    string _cipher;
+    string _encryptedKey;
+    int msgLen;
 
 public:
     void GenerateRSAKey(int keyLength, const string privFilename, const string pubFilename, const string seed);

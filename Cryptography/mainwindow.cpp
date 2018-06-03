@@ -250,11 +250,13 @@ void MainWindow::on_pushButton_crypto_clicked()
     */
 
     AutoSeededRandomPool prng;
+    string cipher;
+    string encryptedKey;
 
-
-
-    string message = "ECB Mode Test";
-    string encoded, recovered;
+    string message = ui->textEdit_message->toPlainText().toStdString();
+    msgLen = message.size();
+    cout << "msgLen: " << msgLen << endl;
+    cout << "message: " << message << endl;
 
     ////////////////////////////////////////////////
     // digest
@@ -266,7 +268,7 @@ void MainWindow::on_pushButton_crypto_clicked()
     string signature;
     RSASS<PSSR, SHA1>::Signer signer(keyPairA.first);
     {
-        StringSource ss1(signature, true,
+        StringSource ss1(digest, true,
             new SignerFilter(prng, signer,
                 new StringSink(signature),
                 true // putMessage for recovery
@@ -282,9 +284,9 @@ void MainWindow::on_pushButton_crypto_clicked()
 
     ////////////////////////////////////////////////
     // encrypt plain text by AES and get the cipher
-    string cipher;
     try
     {
+        cout << "plain len: " << plain.size() << endl;
         ECB_Mode< AES >::Encryption e;
         e.SetKey(key, sizeof(key));
 
@@ -306,9 +308,6 @@ void MainWindow::on_pushButton_crypto_clicked()
 
     ///////////////////////////////////////////////
     // Encrypt the symmetric key K with the public key of B
-    std::string encryptedKey;
-//    string keyStr((char*)key, sizeof(key));
-    string keyStr("RSA Encryption");
     {
         RSAES_OAEP_SHA_Encryptor e(keyPairB.second);
         StringSource ss1(key, sizeof(key), true,
@@ -322,24 +321,40 @@ void MainWindow::on_pushButton_crypto_clicked()
     ////////////////////////////////////////////////
     // send text
     string sendText = cipher + encryptedKey;
+    cout << "cipher len: " << cipher.size() << endl;
+    cout << "encryptedKey len: " << encryptedKey.size() << endl;
+    cout << AES::DEFAULT_KEYLENGTH << endl;
+
+    _cipher = cipher;
+    _encryptedKey = encryptedKey;
+}
+
+void MainWindow::on_pushButton_decrypto_clicked()
+{
+
+    string cipher = _cipher;
+    string encryptedKey = _encryptedKey;
 
     /**
     ** Second part: decryption
     */
 
+    AutoSeededRandomPool prng;
+
     ////////////////////////////////////////////////
     // Decrypt to get the symmetric key K with the private key of B
     byte recoveredKey[AES::DEFAULT_KEYLENGTH];
+    string recoveredKeyStr;
     {
-        string recovered;
         RSAES_OAEP_SHA_Decryptor d(keyPairB.first);
         StringSource ss2( encryptedKey, true,
             new PK_DecryptorFilter( prng, d,
-                new StringSink(recovered)
+                new StringSink(recoveredKeyStr)
             ) // PK_DecryptorFilter
          ); // StringSource
-        strncpy((char*)recoveredKey,recovered.c_str(),recovered.length());
+        strncpy((char*)recoveredKey,recoveredKeyStr.c_str(),recoveredKeyStr.length());
     }
+    ui->textEdit_recoveredKey->setText(toHexString(recoveredKeyStr).c_str());
 
     string recoveredPlain;
     string recoveredMsg;
@@ -349,7 +364,7 @@ void MainWindow::on_pushButton_crypto_clicked()
     try
     {
         ECB_Mode< AES >::Decryption d;
-        d.SetKey(key, sizeof(key));
+        d.SetKey(recoveredKey, sizeof(recoveredKey));
 
         // The StreamTransformationFilter removes
         //  padding as required.
@@ -359,9 +374,9 @@ void MainWindow::on_pushButton_crypto_clicked()
             ) // StreamTransformationFilter
         ); // StringSource
 
-        assert(recoveredPlain == plain);
-        recoveredMsg = recoveredPlain.substr(0, recoveredPlain.size() - 3072/8);
-        recoveredSignature = recoveredPlain.substr(recoveredPlain.size() - 3072/8 + 1);
+        cout << "recoveredPlain len " << recoveredPlain.size() << endl;
+        recoveredMsg = recoveredPlain.substr(0, msgLen);
+        recoveredSignature = recoveredPlain.substr(msgLen);
         cout << "recoveredMsg: " << recoveredMsg << endl;
     }
     catch(const CryptoPP::Exception& e)
@@ -369,4 +384,25 @@ void MainWindow::on_pushButton_crypto_clicked()
         cerr << e.what() << endl;
         exit(1);
     }
+
+    ui->textEdit_recoveredMessage->setText(recoveredMsg.c_str());
+    ui->textEdit_recoveredSignature->setText(toHexString(recoveredSignature).c_str());
+    ui->textEdit_recaculatedDigest->setText(getHexHash(recoveredMsg).c_str());
+
+    ////////////////////////////////////////////////
+    // Verify and Recover Signature
+    RSASS<PSSR, SHA1>::Verifier verifier(keyPairA.second);
+    string recoveredDigest;
+    {
+        StringSource ss2(recoveredSignature, true,
+            new SignatureVerificationFilter(
+                verifier,
+                new StringSink(recoveredDigest),
+                SignatureVerificationFilter::THROW_EXCEPTION | SignatureVerificationFilter::PUT_MESSAGE
+           ) // SignatureVerificationFilter
+        ); // StringSource
+    }
+    cout << "Verified signature on message" << endl;
+    cout << "recovered digest: " << recoveredDigest << endl;
+    ui->textEdit_recoveredDigest->setText(recoveredDigest.c_str());
 }
