@@ -129,6 +129,16 @@ string MainWindow::toHexString(const SecByteBlock& bt){
     return encoded;
 }
 
+string MainWindow::toHexString(const string &raw){
+    string encoded;
+    StringSource(raw, true,
+        new HexEncoder(
+            new StringSink(encoded)
+        ) // HexEncoder
+    ); // StringSource
+    return encoded;
+}
+
 void MainWindow::on_pushButton_gen_a_clicked()
 {
     GenerateRSAKeyA();
@@ -241,7 +251,7 @@ void MainWindow::on_pushButton_crypto_clicked()
 
     AutoSeededRandomPool prng;
 
-    prng.GenerateBlock(key, sizeof(key));
+
 
     string message = "ECB Mode Test";
     string encoded, recovered;
@@ -249,7 +259,7 @@ void MainWindow::on_pushButton_crypto_clicked()
     ////////////////////////////////////////////////
     // digest
     string digest = getHexHash(message);
-
+    ui->textEdit_digest->setText(digest.c_str());
 
     ////////////////////////////////////////////////
     // signature
@@ -265,6 +275,7 @@ void MainWindow::on_pushButton_crypto_clicked()
         // generate n bytes's signature, n should equal to the bytes len of rsa mod number, in my program, it's 3072 / 8
         cout << "signature len: " << signature.size() << endl;
     }
+    ui->textEdit_signature->setText(toHexString(signature).c_str());
 
     // plain composed of message and signature, the plain text will be encrypted and then send out
     string plain = message + signature;
@@ -291,6 +302,7 @@ void MainWindow::on_pushButton_crypto_clicked()
         cerr << e.what() << endl;
         exit(1);
     }
+    ui->textEdit_ciphertext->setText(toHexString(cipher).c_str());
 
     ///////////////////////////////////////////////
     // Encrypt the symmetric key K with the public key of B
@@ -305,6 +317,7 @@ void MainWindow::on_pushButton_crypto_clicked()
             ) // PK_EncryptorFilter
          ); // StringSource
     }
+    ui->textEdit_encryptedKey->setText(toHexString(encryptedKey).c_str());
 
     ////////////////////////////////////////////////
     // send text

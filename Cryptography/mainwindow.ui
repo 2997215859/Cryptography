@@ -115,7 +115,7 @@
      <string>加密消息和签名</string>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEdit_2">
+   <widget class="QTextEdit" name="textEdit_ciphertext">
     <property name="geometry">
      <rect>
       <x>1150</x>
@@ -138,7 +138,7 @@
      <string>消息哈希</string>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEdit_3">
+   <widget class="QTextEdit" name="textEdit_digest">
     <property name="geometry">
      <rect>
       <x>150</x>
@@ -161,7 +161,7 @@
      <string>加密对称密钥K</string>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEdit_4">
+   <widget class="QTextEdit" name="textEdit_encryptedKey">
     <property name="geometry">
      <rect>
       <x>1150</x>
@@ -171,7 +171,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEdit_5">
+   <widget class="QTextEdit" name="textEdit_signature">
     <property name="geometry">
      <rect>
       <x>600</x>

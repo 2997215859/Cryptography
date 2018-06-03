@@ -78,6 +78,7 @@ public:
     string toHexString(const BufferedTransformation& bt);
     string toHexString(const SecByteBlock& bt);
     string toString(const SecByteBlock& bt);
+    string toHexString(const string& raw);
 
     string getHexHash(string message);
 };
