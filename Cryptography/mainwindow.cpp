@@ -205,3 +205,27 @@ void MainWindow::on_pushButton_gen_k_clicked()
 
     ui->textEdit_k->setText(hexStr.c_str());
 }
+
+string MainWindow::getHexHash(string message){
+    message = "Now is the time for all good men to come to the aide of their country";
+
+    string s1;
+    SHA1 sha1;
+
+    HashFilter f1(sha1, new HexEncoder(new StringSink(s1)));
+
+    ChannelSwitch cs;
+    cs.AddDefaultRoute(f1);
+
+    StringSource ss(message, true /*pumpAll*/, new Redirector(cs));
+
+    cout <<" Message: " << message << endl;
+    cout << "SHA-1: " << s1 << endl;
+    return s1;
+}
+
+
+void MainWindow::on_pushButton_crypto_clicked()
+{
+    getHexHash("h");
+}

@@ -240,32 +240,6 @@
      <string>解密对称密钥K</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_13">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>230</y>
-      <width>71</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>加密过程</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_14">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>500</y>
-      <width>81</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>解密过程</string>
-    </property>
-   </widget>
    <widget class="QTextEdit" name="textEdit_9">
     <property name="geometry">
      <rect>
@@ -409,6 +383,32 @@
     </property>
     <property name="text">
      <string>B私钥</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_crypto">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>220</y>
+      <width>141</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>加密</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_gen_a_3">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>500</y>
+      <width>141</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>解密</string>
     </property>
    </widget>
   </widget>

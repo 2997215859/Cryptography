@@ -10,6 +10,10 @@
 #include <Cryptopp/hex.h>
 #include <Cryptopp/files.h>
 #include <Cryptopp/osrng.h>
+#include <Cryptopp/filters.h>
+#include <Cryptopp/sha.h>
+#include <Cryptopp/md5.h>
+#include <Cryptopp/channels.h>
 
 namespace Ui {
 class MainWindow;
@@ -32,6 +36,8 @@ private slots:
     void on_pushButton_gen_b_clicked();
 
     void on_pushButton_gen_k_clicked();
+
+    void on_pushButton_crypto_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -59,6 +65,8 @@ public:
 
     string toHexString(const BufferedTransformation& bt);
     string toHexString(const SecByteBlock& bt);
+
+    string getHexHash(string message);
 };
 
 #endif // MAINWINDOW_H
