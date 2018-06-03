@@ -29,6 +29,8 @@ public:
 private slots:
     void on_pushButton_gen_a_clicked();
 
+    void on_pushButton_gen_b_clicked();
+
 private:
     Ui::MainWindow *ui;
 
@@ -42,7 +44,8 @@ private:
 
 public:
     void GenerateRSAKey(int keyLength, const std::string privFilename, const std::string pubFilename, const std::string seed);
-    void GenerateRSAKey();
+    void GenerateRSAKeyA();
+    void GenerateRSAKeyB();
     void SavePublicKey(const std::string& filename, const CryptoPP::PublicKey& key);
     void SavePrivateKey(const std::string& filename, const CryptoPP::PrivateKey& key);
     void Save(const std::string& filename, const CryptoPP::BufferedTransformation& bt);
