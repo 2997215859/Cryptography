@@ -59,8 +59,8 @@ private:
     byte key[AES::DEFAULT_KEYLENGTH];
 
     // need send
-    string _cipher;
-    string _encryptedKey;
+    string cipher;
+    string encryptedKey;
     int msgLen;
 
 public:

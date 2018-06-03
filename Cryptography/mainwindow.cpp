@@ -249,9 +249,11 @@ void MainWindow::on_pushButton_crypto_clicked()
     ** First part: encryption
     */
 
+
     AutoSeededRandomPool prng;
-    string cipher;
-    string encryptedKey;
+
+    cipher.clear();
+    encryptedKey.clear();
 
     string message = ui->textEdit_message->toPlainText().toStdString();
     msgLen = message.size();
@@ -325,15 +327,15 @@ void MainWindow::on_pushButton_crypto_clicked()
     cout << "encryptedKey len: " << encryptedKey.size() << endl;
     cout << AES::DEFAULT_KEYLENGTH << endl;
 
-    _cipher = cipher;
-    _encryptedKey = encryptedKey;
+//    _cipher = cipher;
+//    _encryptedKey = encryptedKey;
 }
 
 void MainWindow::on_pushButton_decrypto_clicked()
 {
 
-    string cipher = _cipher;
-    string encryptedKey = _encryptedKey;
+//    string cipher = _cipher;
+//    string encryptedKey = _encryptedKey;
 
     /**
     ** Second part: decryption
