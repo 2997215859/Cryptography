@@ -79,7 +79,7 @@
      <string>A私钥</string>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEdit">
+   <widget class="QTextEdit" name="textEdit_message">
     <property name="geometry">
      <rect>
       <x>150</x>

@@ -14,6 +14,9 @@
 #include <Cryptopp/sha.h>
 #include <Cryptopp/md5.h>
 #include <Cryptopp/channels.h>
+#include <Cryptopp/aes.h>
+#include <Cryptopp/modes.h>
+#include <Cryptopp/pssr.h>
 
 namespace Ui {
 class MainWindow;
@@ -48,11 +51,20 @@ private:
     InvertibleRSAFunction paramsB;
     KeyPair keyPairB;
 
+
+    SecByteBlock iv;
+
+    byte key[AES::DEFAULT_KEYLENGTH];
+
+
 public:
     void GenerateRSAKey(int keyLength, const string privFilename, const string pubFilename, const string seed);
     pair<RSA::PrivateKey, RSA::PublicKey> generateRSAKey(int keyLen, InvertibleRSAFunction &param);
+
     void GenerateRSAKeyA();
     void GenerateRSAKeyB();
+
+
     void SavePublicKey(const string& filename, const PublicKey& key);
     void SavePrivateKey(const string& filename, const PrivateKey& key);
     void Save(const string& filename, const BufferedTransformation& bt);
@@ -65,6 +77,7 @@ public:
 
     string toHexString(const BufferedTransformation& bt);
     string toHexString(const SecByteBlock& bt);
+    string toString(const SecByteBlock& bt);
 
     string getHexHash(string message);
 };

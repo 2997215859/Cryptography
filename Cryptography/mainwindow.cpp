@@ -94,6 +94,11 @@ void MainWindow::SaveHex(const std::string& filename, const CryptoPP::BufferedTr
     Save(filename, encoder);
 }
 
+string MainWindow::toString(const SecByteBlock& bt){
+    std::string str(reinterpret_cast<const char*>(bt.data()), bt.size());
+    return str;
+}
+
 string MainWindow::toHexString(const BufferedTransformation& bt){
     std::string encoded;
     HexEncoder encoder;
@@ -197,18 +202,21 @@ void MainWindow::GenerateRSAKeyB(){
 void MainWindow::on_pushButton_gen_k_clicked()
 {
     AutoSeededRandomPool rnd;
-    SecByteBlock key(0x00, AES::DEFAULT_KEYLENGTH);
-    rnd.GenerateBlock(key, key.size());
 
-//    std::string str(reinterpret_cast<const char*>(key.data()), key.size()); // to a string
-    string hexStr = toHexString(key);
+    rnd.GenerateBlock(key,sizeof(key));
 
-    ui->textEdit_k->setText(hexStr.c_str());
+    string encoded;
+    encoded.clear();
+    StringSource(key, sizeof(key), true,
+        new HexEncoder(
+            new StringSink(encoded)
+        ) // HexEncoder
+    ); // StringSource
+    cout << "key: " << encoded << endl;
+    ui->textEdit_k->setText(encoded.c_str());
 }
 
 string MainWindow::getHexHash(string message){
-    message = "Now is the time for all good men to come to the aide of their country";
-
     string s1;
     SHA1 sha1;
 
@@ -224,8 +232,112 @@ string MainWindow::getHexHash(string message){
     return s1;
 }
 
-
 void MainWindow::on_pushButton_crypto_clicked()
 {
-    getHexHash("h");
+
+    AutoSeededRandomPool prng;
+
+    prng.GenerateBlock(key, sizeof(key));
+
+    string message = "ECB Mode Test";
+    string cipher, encoded, recovered;
+
+    string digest = getHexHash(message);
+
+    ////////////////////////////////////////////////
+    // Setup
+    string message2 = digest, signature, recovered2;
+
+    ////////////////////////////////////////////////
+    // Sign and Encode
+    RSASS<PSSR, SHA1>::Signer signer(keyPairA.first);
+
+    StringSource ss1(message2, true,
+        new SignerFilter(prng, signer,
+            new StringSink(signature),
+            true // putMessage for recovery
+       ) // SignerFilter
+    ); // StringSource
+
+    ////////////////////////////////////////////////
+    // Verify and Recover
+    RSASS<PSSR, SHA1>::Verifier verifier(keyPairA.second);
+
+    StringSource ss2(signature, true,
+        new SignatureVerificationFilter(
+            verifier,
+            new StringSink(recovered2),
+            SignatureVerificationFilter::THROW_EXCEPTION | SignatureVerificationFilter::PUT_MESSAGE
+       ) // SignatureVerificationFilter
+    ); // StringSource
+
+    cout << "Verified signature on message" << endl;
+    cout << "recovered digest: " << recovered2 << endl;
+
+    string plain = message + digest;
+
+    try
+    {
+        cout << "plain text: " << plain << endl;
+
+        ECB_Mode< AES >::Encryption e;
+        e.SetKey(key, sizeof(key));
+
+        // The StreamTransformationFilter adds padding
+        //  as required. ECB and CBC Mode must be padded
+        //  to the block size of the cipher.
+        StringSource(plain, true,
+            new StreamTransformationFilter(e,
+                new StringSink(cipher)
+            ) // StreamTransformationFilter
+        ); // StringSource
+    }
+    catch(const CryptoPP::Exception& e)
+    {
+        cerr << e.what() << endl;
+        exit(1);
+    }
+
+
+
+
+//    /*********************************\
+//    \*********************************/
+
+//    // Pretty print
+//    encoded.clear();
+//    StringSource(cipher, true,
+//        new HexEncoder(
+//            new StringSink(encoded)
+//        ) // HexEncoder
+//    ); // StringSource
+//    cout << "cipher text: " << encoded << endl;
+
+//    /*********************************\
+//    \*********************************/
+
+//    try
+//    {
+//        ECB_Mode< AES >::Decryption d;
+//        d.SetKey(key, sizeof(key));
+
+//        // The StreamTransformationFilter removes
+//        //  padding as required.
+//        StringSource s(cipher, true,
+//            new StreamTransformationFilter(d,
+//                new StringSink(recovered)
+//            ) // StreamTransformationFilter
+//        ); // StringSource
+
+//        cout << "recovered text: " << recovered << endl;
+//    }
+//    catch(const CryptoPP::Exception& e)
+//    {
+//        cerr << e.what() << endl;
+//        exit(1);
+//    }
+
+    /*********************************\
+    \*********************************/
+
 }
