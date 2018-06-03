@@ -15,11 +15,6 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::on_pushButton_gen_a_clicked()
-{
-    GenerateRSAKeyA();
-}
-
 void MainWindow::GenerateRSAKey(int keyLength, const std::string privFilename, const std::string pubFilename, const std::string seed) {
         using namespace CryptoPP;
         RandomPool randPool;
@@ -36,69 +31,7 @@ void MainWindow::GenerateRSAKey(int keyLength, const std::string privFilename, c
         pubFile.MessageEnd();
 }
 
-void MainWindow::GenerateRSAKeyA(){
 
-    using namespace CryptoPP;
-    using namespace std;
-    ///////////////////////////////////////
-    // Pseudo Random Number Generator
-    AutoSeededRandomPool rng;
-
-    ///////////////////////////////////////
-    // Generate Parameters
-    paramsA.GenerateRandomWithKeySize(rng, 3072);
-
-    ///////////////////////////////////////
-    // Generated Parameters
-    const Integer& n = paramsA.GetModulus();
-    const Integer& p = paramsA.GetPrime1();
-    const Integer& q = paramsA.GetPrime2();
-    const Integer& d = paramsA.GetPrivateExponent();
-    const Integer& e = paramsA.GetPublicExponent();
-
-    ///////////////////////////////////////
-    // Dump
-    cout << "RSA Parameters:" << endl;
-    cout << " n: " << n << endl;
-    cout << " p: " << p << endl;
-    cout << " q: " << q << endl;
-    cout << " d: " << d << endl;
-    cout << " e: " << e << endl;
-    cout << endl;
-
-    ///////////////////////////////////////
-    // Create Keys
-    privateKeyA = RSA::PrivateKey(paramsA);
-    publicKeyA = RSA::PublicKey(paramsA);
-
-    {
-        QString rsaPrivateFilename("rsa-private-a.key");
-        SaveHexPrivateKey(rsaPrivateFilename.toStdString(), privateKeyA);
-        QFile privateFile(rsaPrivateFilename);
-        if (!privateFile.open(QIODevice::ReadOnly | QFile::Text)) {
-            QMessageBox::warning(this, "Warning", "Cannot open file: " + privateFile.errorString());
-            return;
-        }
-        QTextStream in(&privateFile);
-        QString text = in.readAll();
-        ui->textEdit_a_pr->setText(text);
-    }
-
-    {
-        QString rsaPublicFilename("rsa-public-a.key");
-        SaveHexPublicKey(rsaPublicFilename.toStdString(), publicKeyA);
-        QFile publicFile(rsaPublicFilename);
-        if (!publicFile.open(QIODevice::ReadOnly | QFile::Text)) {
-            QMessageBox::warning(this, "Warning", "Cannot open file: " + publicFile.errorString());
-            return;
-        }
-        QTextStream in(&publicFile);
-        QString text = in.readAll();
-        ui->textEdit_a_pu->setText(text);
-    }
-
-
-}
 
 void MainWindow::SavePublicKey(const std::string& filename, const CryptoPP::PublicKey& key) {
     CryptoPP::ByteQueue queue;
@@ -153,7 +86,6 @@ void MainWindow::SaveHexPublicKey(const std::string& filename, const CryptoPP::P
 }
 
 void MainWindow::SaveHex(const std::string& filename, const CryptoPP::BufferedTransformation& bt){
-    using namespace CryptoPP;
     HexEncoder encoder;
 
     bt.CopyTo(encoder);
@@ -162,30 +94,57 @@ void MainWindow::SaveHex(const std::string& filename, const CryptoPP::BufferedTr
     Save(filename, encoder);
 }
 
+string MainWindow::toHexString(const BufferedTransformation& bt){
+    std::string encoded;
+    HexEncoder encoder;
+    bt.CopyTo(encoder);
+    encoder.MessageEnd();
+
+    word64 size = encoder.MaxRetrievable();
+    if(size)
+    {
+        encoded.resize(size);
+        encoder.Get((byte*)&encoded[0], encoded.size());
+    }
+    return encoded;
+}
+
+string MainWindow::toHexString(const SecByteBlock& bt){
+    std::string encoded;
+    HexEncoder encoder;
+    encoder.Put(bt, bt.size());
+    encoder.MessageEnd();
+
+    word64 size = encoder.MaxRetrievable();
+    if(size)
+    {
+        encoded.resize(size);
+        encoder.Get((byte*)&encoded[0], encoded.size());
+    }
+    return encoded;
+}
+
+void MainWindow::on_pushButton_gen_a_clicked()
+{
+    GenerateRSAKeyA();
+}
+
 void MainWindow::on_pushButton_gen_b_clicked()
 {
     GenerateRSAKeyB();
 }
 
-void MainWindow::GenerateRSAKeyB(){
-
-    using namespace CryptoPP;
-    using namespace std;
-    ///////////////////////////////////////
-    // Pseudo Random Number Generator
+pair<RSA::PrivateKey, RSA::PublicKey> MainWindow::generateRSAKey(int keyLen, InvertibleRSAFunction &param) {
     AutoSeededRandomPool rng;
-
-    ///////////////////////////////////////
-    // Generate Parameters
-    paramsB.GenerateRandomWithKeySize(rng, 3072);
+    param.GenerateRandomWithKeySize(rng, keyLen);
 
     ///////////////////////////////////////
     // Generated Parameters
-    const Integer& n = paramsB.GetModulus();
-    const Integer& p = paramsB.GetPrime1();
-    const Integer& q = paramsB.GetPrime2();
-    const Integer& d = paramsB.GetPrivateExponent();
-    const Integer& e = paramsB.GetPublicExponent();
+    const Integer& n = param.GetModulus();
+    const Integer& p = param.GetPrime1();
+    const Integer& q = param.GetPrime2();
+    const Integer& d = param.GetPrivateExponent();
+    const Integer& e = param.GetPublicExponent();
 
     ///////////////////////////////////////
     // Dump
@@ -199,36 +158,40 @@ void MainWindow::GenerateRSAKeyB(){
 
     ///////////////////////////////////////
     // Create Keys
-    privateKeyB = RSA::PrivateKey(paramsB);
-    publicKeyB = RSA::PublicKey(paramsB);
+    RSA::PrivateKey privateKey(param);
+    RSA::PublicKey publicKey(param);
+    return {privateKey, publicKey};
+}
 
+void MainWindow::GenerateRSAKeyA(){
 
+    keyPairA = generateRSAKey(3072, paramsA);
 
-    {
-        QString rsaPrivateFilename("rsa-private-b.key");
-        SaveHexPrivateKey(rsaPrivateFilename.toStdString(), privateKeyB);
-        QFile privateFile(rsaPrivateFilename);
-        if (!privateFile.open(QIODevice::ReadOnly | QFile::Text)) {
-            QMessageBox::warning(this, "Warning", "Cannot open file: " + privateFile.errorString());
-            return;
-        }
-        QTextStream in(&privateFile);
-        QString text = in.readAll();
-        ui->textEdit_b_pr->setText(text);
-    }
+    ByteQueue queuePr;
+    keyPairA.first.Save(queuePr);
+    string hexStrPr = toHexString(queuePr);
+    ui->textEdit_a_pr->setText(hexStrPr.c_str());
 
-    {
-        QString rsaPublicFilename("rsa-public-b.key");
-        SaveHexPublicKey(rsaPublicFilename.toStdString(), privateKeyB);
-        QFile publicFile(rsaPublicFilename);
-        if (!publicFile.open(QIODevice::ReadOnly | QFile::Text)) {
-            QMessageBox::warning(this, "Warning", "Cannot open file: " + publicFile.errorString());
-            return;
-        }
-        QTextStream in(&publicFile);
-        QString text = in.readAll();
-        ui->textEdit_b_pu->setText(text);
-    }
+    ByteQueue queuePu;
+    keyPairA.second.Save(queuePu);
+    string hexStrPu = toHexString(queuePu);
+    ui->textEdit_a_pu->setText(hexStrPu.c_str());
+}
+
+void MainWindow::GenerateRSAKeyB(){
+
+    keyPairB = generateRSAKey(3072, paramsB);
+
+    ByteQueue queuePr;
+    keyPairB.first.Save(queuePr);
+    string hexStrPr = toHexString(queuePr);
+    ui->textEdit_b_pr->setText(hexStrPr.c_str());
+
+    ByteQueue queuePu;
+    keyPairB.second.Save(queuePu);
+    string hexStrPu = toHexString(queuePu);
+    ui->textEdit_b_pu->setText(hexStrPu.c_str());
+
 }
 
 void MainWindow::on_pushButton_gen_k_clicked()
@@ -238,17 +201,7 @@ void MainWindow::on_pushButton_gen_k_clicked()
     rnd.GenerateBlock(key, key.size());
 
 //    std::string str(reinterpret_cast<const char*>(key.data()), key.size()); // to a string
+    string hexStr = toHexString(key);
 
-    std::string encoded; // hex encode
-    HexEncoder encoder;
-    encoder.Put(key, key.size());
-    encoder.MessageEnd();
-    word64 size = encoder.MaxRetrievable();
-    if(size)
-    {
-        encoded.resize(size);
-        encoder.Get((byte*)&encoded[0], encoded.size());
-    }
-    encoder.Get((byte*)&encoded[0], encoded.size());
-    ui->textEdit_k->setText(encoded.c_str());
+    ui->textEdit_k->setText(hexStr.c_str());
 }

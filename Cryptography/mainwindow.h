@@ -21,7 +21,7 @@ using namespace std;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-
+    typedef pair<RSA::PrivateKey, RSA::PublicKey> KeyPair;
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
@@ -37,26 +37,28 @@ private:
     Ui::MainWindow *ui;
 
     InvertibleRSAFunction paramsA;
-    RSA::PrivateKey privateKeyA;
-    RSA::PublicKey publicKeyA;
+    KeyPair keyPairA;
 
     InvertibleRSAFunction paramsB;
-    RSA::PrivateKey privateKeyB;
-    RSA::PublicKey publicKeyB;
+    KeyPair keyPairB;
 
 public:
-    void GenerateRSAKey(int keyLength, const std::string privFilename, const std::string pubFilename, const std::string seed);
+    void GenerateRSAKey(int keyLength, const string privFilename, const string pubFilename, const string seed);
+    pair<RSA::PrivateKey, RSA::PublicKey> generateRSAKey(int keyLen, InvertibleRSAFunction &param);
     void GenerateRSAKeyA();
     void GenerateRSAKeyB();
-    void SavePublicKey(const std::string& filename, const CryptoPP::PublicKey& key);
-    void SavePrivateKey(const std::string& filename, const CryptoPP::PrivateKey& key);
-    void Save(const std::string& filename, const CryptoPP::BufferedTransformation& bt);
-    void LoadPublicKey(const std::string& filename, CryptoPP::PublicKey& key);
-    void Load(const std::string& filename, CryptoPP::BufferedTransformation& bt);
+    void SavePublicKey(const string& filename, const PublicKey& key);
+    void SavePrivateKey(const string& filename, const PrivateKey& key);
+    void Save(const string& filename, const BufferedTransformation& bt);
+    void LoadPublicKey(const string& filename,PublicKey& key);
+    void Load(const string& filename, BufferedTransformation& bt);
 
-    void SaveHexPrivateKey(const std::string& filename, const CryptoPP::PrivateKey& key);
-    void SaveHexPublicKey(const std::string& filename, const CryptoPP::PublicKey& key);
-    void SaveHex(const std::string& filename, const CryptoPP::BufferedTransformation& bt);
+    void SaveHexPrivateKey(const string& filename, const PrivateKey& key);
+    void SaveHexPublicKey(const string& filename, const PublicKey& key);
+    void SaveHex(const string& filename, const BufferedTransformation& bt);
+
+    string toHexString(const BufferedTransformation& bt);
+    string toHexString(const SecByteBlock& bt);
 };
 
 #endif // MAINWINDOW_H
