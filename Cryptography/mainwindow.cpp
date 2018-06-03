@@ -164,10 +164,6 @@ void MainWindow::SaveHex(const std::string& filename, const CryptoPP::BufferedTr
 
 void MainWindow::on_pushButton_gen_b_clicked()
 {
-    unsigned int keyLength = 256;
-    std::string pubFilename("pub_file.txt");
-    std::string privFilename("priv_file.txt");
-    std::string thisSeed("2");
     GenerateRSAKeyB();
 }
 
@@ -206,6 +202,8 @@ void MainWindow::GenerateRSAKeyB(){
     privateKeyB = RSA::PrivateKey(paramsB);
     publicKeyB = RSA::PublicKey(paramsB);
 
+
+
     {
         QString rsaPrivateFilename("rsa-private-b.key");
         SaveHexPrivateKey(rsaPrivateFilename.toStdString(), privateKeyB);
@@ -231,4 +229,26 @@ void MainWindow::GenerateRSAKeyB(){
         QString text = in.readAll();
         ui->textEdit_b_pu->setText(text);
     }
+}
+
+void MainWindow::on_pushButton_gen_k_clicked()
+{
+    AutoSeededRandomPool rnd;
+    SecByteBlock key(0x00, AES::DEFAULT_KEYLENGTH);
+    rnd.GenerateBlock(key, key.size());
+
+//    std::string str(reinterpret_cast<const char*>(key.data()), key.size()); // to a string
+
+    std::string encoded; // hex encode
+    HexEncoder encoder;
+    encoder.Put(key, key.size());
+    encoder.MessageEnd();
+    word64 size = encoder.MaxRetrievable();
+    if(size)
+    {
+        encoded.resize(size);
+        encoder.Get((byte*)&encoded[0], encoded.size());
+    }
+    encoder.Get((byte*)&encoded[0], encoded.size());
+    ui->textEdit_k->setText(encoded.c_str());
 }
