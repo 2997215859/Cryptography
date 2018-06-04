@@ -17,6 +17,16 @@ MainWindow::MainWindow(QWidget *parent) :
     encryptModeGroup->addButton(ui->radioButton_aes, MODE_ENCRYPT_AES);
     encryptModeGroup->addButton(ui->radioButton_des, MODE_ENCRYPT_DES);
     ui->radioButton_aes->setChecked(true);
+
+    on_pushButton_gen_a_clicked();
+    on_pushButton_gen_b_clicked();
+    on_pushButton_gen_k_clicked();
+    ui->textEdit_message->setText("Just Test This System");
+    ui->textEdit_a_pr->setReadOnly(true);
+    ui->textEdit_a_pu->setReadOnly(true);
+    ui->textEdit_b_pr->setReadOnly(true);
+    ui->textEdit_b_pu->setReadOnly(true);
+    ui->textEdit_k->setReadOnly(true);
 }
 
 MainWindow::~MainWindow()
