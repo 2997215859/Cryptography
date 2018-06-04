@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include <QFile>
 #include <QMessageBox>
+#include <QRadioButton>
+#include <QButtonGroup>
 
 #include <Cryptopp/randpool.h>
 #include <Cryptopp/rsa.h>
@@ -46,6 +48,8 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    QButtonGroup *digestModeGroup;
+    QButtonGroup *encryptModeGroup;
 
     InvertibleRSAFunction paramsA;
     KeyPair keyPairA;
@@ -64,6 +68,8 @@ private:
     int msgLen;
 
 public:
+    typedef enum{MODE_DIGEST_SHA1, MODE_DIGEST_MD5} digestMode;
+    typedef enum{MODE_ENCRYPT_AES, MODE_ENCRYPT_DES} encryptMode;
     void GenerateRSAKey(int keyLength, const string privFilename, const string pubFilename, const string seed);
     pair<RSA::PrivateKey, RSA::PublicKey> generateRSAKey(int keyLen, InvertibleRSAFunction &param);
 

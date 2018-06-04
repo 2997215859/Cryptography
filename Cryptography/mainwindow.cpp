@@ -8,11 +8,22 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    digestModeGroup = new QButtonGroup(this);
+    digestModeGroup->addButton(ui->radioButton_sha1, MODE_DIGEST_SHA1);
+    digestModeGroup->addButton(ui->radioButton_md5, MODE_DIGEST_MD5);
+    ui->radioButton_sha1->setChecked(true);
+
+    encryptModeGroup = new QButtonGroup(this);
+    encryptModeGroup->addButton(ui->radioButton_aes, MODE_ENCRYPT_AES);
+    encryptModeGroup->addButton(ui->radioButton_des, MODE_ENCRYPT_DES);
+    ui->radioButton_aes->setChecked(true);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete digestModeGroup;
+    delete encryptModeGroup;
 }
 
 void MainWindow::GenerateRSAKey(int keyLength, const std::string privFilename, const std::string pubFilename, const std::string seed) {
@@ -227,19 +238,27 @@ void MainWindow::on_pushButton_gen_k_clicked()
 }
 
 string MainWindow::getHexHash(string message){
-    string s1;
-    SHA1 sha1;
+    if (digestModeGroup->checkedId() == MODE_DIGEST_SHA1) {
+        string s1;
+        SHA1 sha1;
 
-    HashFilter f1(sha1, new HexEncoder(new StringSink(s1)));
+        HashFilter f1(sha1, new HexEncoder(new StringSink(s1)));
 
-    ChannelSwitch cs;
-    cs.AddDefaultRoute(f1);
+        ChannelSwitch cs;
+        cs.AddDefaultRoute(f1);
 
-    StringSource ss(message, true /*pumpAll*/, new Redirector(cs));
+        StringSource ss(message, true /*pumpAll*/, new Redirector(cs));
 
-    cout <<" Message: " << message << endl;
-    cout << "SHA-1: " << s1 << endl;
-    return s1;
+        cout <<" Message: " << message << endl;
+        cout << "SHA-1: " << s1 << endl;
+        return s1;
+    } else if (digestModeGroup->checkedId() == MODE_DIGEST_MD5) {
+        string digest;
+        Weak1::MD5 md5;
+        StringSource(message, true,
+                     new HashFilter(md5, new HexEncoder(new StringSink(digest))));
+        return digest;
+    }
 }
 
 void MainWindow::on_pushButton_crypto_clicked()
