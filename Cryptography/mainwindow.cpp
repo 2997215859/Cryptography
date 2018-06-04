@@ -248,8 +248,6 @@ string MainWindow::getHexHash(string message){
         cs.AddDefaultRoute(f1);
 
         StringSource ss(message, true /*pumpAll*/, new Redirector(cs));
-
-        cout <<" Message: " << message << endl;
         cout << "SHA-1: " << s1 << endl;
         return s1;
     } else if (digestModeGroup->checkedId() == MODE_DIGEST_MD5) {
@@ -257,6 +255,7 @@ string MainWindow::getHexHash(string message){
         Weak1::MD5 md5;
         StringSource(message, true,
                      new HashFilter(md5, new HexEncoder(new StringSink(digest))));
+        cout << "md5: " << digest << endl;
         return digest;
     }
 }
@@ -268,6 +267,7 @@ void MainWindow::on_pushButton_crypto_clicked()
     ** First part: encryption
     */
 
+    cout << "encrypt start..." << endl;
 
     AutoSeededRandomPool prng;
 
@@ -302,29 +302,51 @@ void MainWindow::on_pushButton_crypto_clicked()
 
     // plain composed of message and signature, the plain text will be encrypted and then send out
     string plain = message + signature;
+    cout << "plain len: " << plain.size() << endl;
 
+    if (encryptModeGroup->checkedId() == MODE_ENCRYPT_AES) {
+        try
+        {
+            ECB_Mode< AES >::Encryption e;
+            e.SetKey(key, sizeof(key));
+
+            // The StreamTransformationFilter adds padding
+            //  as required. ECB and CBC Mode must be padded
+            //  to the block size of the cipher.
+            StringSource(plain, true,
+                new StreamTransformationFilter(e,
+                    new StringSink(cipher)
+                ) // StreamTransformationFilter
+            ); // StringSource
+        }
+        catch(const CryptoPP::Exception& e)
+        {
+            cerr << e.what() << endl;
+            exit(1);
+        }
+    } else if (encryptModeGroup->checkedId() == MODE_ENCRYPT_DES) {
+        try
+        {
+            ECB_Mode< DES_EDE2 >::Encryption e;
+            e.SetKey(key, sizeof(key));
+
+            // The StreamTransformationFilter adds padding
+            //  as required. ECB and CBC Mode must be padded
+            //  to the block size of the cipher.
+            StringSource(plain, true,
+                new StreamTransformationFilter(e,
+                    new StringSink(cipher)
+                ) // StreamTransformationFilter
+            ); // StringSource
+        }
+        catch(const CryptoPP::Exception& e)
+        {
+            cerr << e.what() << endl;
+            exit(1);
+        }
+    }
     ////////////////////////////////////////////////
     // encrypt plain text by AES and get the cipher
-    try
-    {
-        cout << "plain len: " << plain.size() << endl;
-        ECB_Mode< AES >::Encryption e;
-        e.SetKey(key, sizeof(key));
-
-        // The StreamTransformationFilter adds padding
-        //  as required. ECB and CBC Mode must be padded
-        //  to the block size of the cipher.
-        StringSource(plain, true,
-            new StreamTransformationFilter(e,
-                new StringSink(cipher)
-            ) // StreamTransformationFilter
-        ); // StringSource
-    }
-    catch(const CryptoPP::Exception& e)
-    {
-        cerr << e.what() << endl;
-        exit(1);
-    }
     ui->textEdit_ciphertext->setText(toHexString(cipher).c_str());
 
     ///////////////////////////////////////////////
@@ -344,18 +366,13 @@ void MainWindow::on_pushButton_crypto_clicked()
     string sendText = cipher + encryptedKey;
     cout << "cipher len: " << cipher.size() << endl;
     cout << "encryptedKey len: " << encryptedKey.size() << endl;
-    cout << AES::DEFAULT_KEYLENGTH << endl;
-
-//    _cipher = cipher;
-//    _encryptedKey = encryptedKey;
+    cout << "encrypt end" << endl << endl;
 }
 
 void MainWindow::on_pushButton_decrypto_clicked()
 {
 
-//    string cipher = _cipher;
-//    string encryptedKey = _encryptedKey;
-
+    cout << "decrypt start..." << endl;
     /**
     ** Second part: decryption
     */
@@ -382,29 +399,50 @@ void MainWindow::on_pushButton_decrypto_clicked()
     string recoveredSignature;
     ////////////////////////////////////////////////
     // Decrypt to get the message and encrypted digest with symmetric key K
-    try
-    {
-        ECB_Mode< AES >::Decryption d;
-        d.SetKey(recoveredKey, sizeof(recoveredKey));
+    if (encryptModeGroup->checkedId() == MODE_ENCRYPT_AES) {
+        try
+        {
+            ECB_Mode< AES >::Decryption d;
+            d.SetKey(recoveredKey, sizeof(recoveredKey));
 
-        // The StreamTransformationFilter removes
-        //  padding as required.
-        StringSource s(cipher, true,
-            new StreamTransformationFilter(d,
-                new StringSink(recoveredPlain)
-            ) // StreamTransformationFilter
-        ); // StringSource
+            // The StreamTransformationFilter removes
+            //  padding as required.
+            StringSource s(cipher, true,
+                new StreamTransformationFilter(d,
+                    new StringSink(recoveredPlain)
+                ) // StreamTransformationFilter
+            ); // StringSource
+        }
+        catch(const CryptoPP::Exception& e)
+        {
+            cerr << e.what() << endl;
+            exit(1);
+        }
+    } else if (encryptModeGroup->checkedId() == MODE_ENCRYPT_DES) {
+        try
+        {
+            ECB_Mode< DES_EDE2 >::Decryption d;
+            d.SetKey(recoveredKey, sizeof(recoveredKey));
 
-        cout << "recoveredPlain len " << recoveredPlain.size() << endl;
-        recoveredMsg = recoveredPlain.substr(0, msgLen);
-        recoveredSignature = recoveredPlain.substr(msgLen);
-        cout << "recoveredMsg: " << recoveredMsg << endl;
+            // The StreamTransformationFilter removes
+            //  padding as required.
+            StringSource s(cipher, true,
+                new StreamTransformationFilter(d,
+                    new StringSink(recoveredPlain)
+                ) // StreamTransformationFilter
+            ); // StringSource
+        }
+        catch(const CryptoPP::Exception& e)
+        {
+            cerr << e.what() << endl;
+            exit(1);
+        }
     }
-    catch(const CryptoPP::Exception& e)
-    {
-        cerr << e.what() << endl;
-        exit(1);
-    }
+
+    recoveredMsg = recoveredPlain.substr(0, msgLen);
+    recoveredSignature = recoveredPlain.substr(msgLen);
+    cout << "recoveredPlain len " << recoveredPlain.size() << endl;
+    cout << "recoveredMsg: " << recoveredMsg << endl;
 
     ui->textEdit_recoveredMessage->setText(recoveredMsg.c_str());
     ui->textEdit_recoveredSignature->setText(toHexString(recoveredSignature).c_str());
@@ -426,4 +464,6 @@ void MainWindow::on_pushButton_decrypto_clicked()
     cout << "Verified signature on message" << endl;
     cout << "recovered digest: " << recoveredDigest << endl;
     ui->textEdit_recoveredDigest->setText(recoveredDigest.c_str());
+
+    cout << "decrypt end..." << endl;
 }

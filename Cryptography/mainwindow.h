@@ -19,6 +19,7 @@
 #include <Cryptopp/aes.h>
 #include <Cryptopp/modes.h>
 #include <Cryptopp/pssr.h>
+#include <Cryptopp/des.h>
 
 namespace Ui {
 class MainWindow;
