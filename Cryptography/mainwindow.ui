@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1471</width>
-    <height>913</height>
+    <width>1518</width>
+    <height>1074</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <widget class="QPushButton" name="pushButton_gen_a">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>80</x>
       <y>30</y>
       <width>141</width>
       <height>51</height>
@@ -30,7 +30,7 @@
    <widget class="QPushButton" name="pushButton_gen_b">
     <property name="geometry">
      <rect>
-      <x>440</x>
+      <x>550</x>
       <y>30</y>
       <width>141</width>
       <height>51</height>
@@ -43,7 +43,7 @@
    <widget class="QPushButton" name="pushButton_gen_k">
     <property name="geometry">
      <rect>
-      <x>860</x>
+      <x>1030</x>
       <y>30</y>
       <width>151</width>
       <height>51</height>
@@ -56,7 +56,7 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>200</x>
+      <x>240</x>
       <y>0</y>
       <width>71</width>
       <height>31</height>
@@ -69,7 +69,7 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>180</x>
+      <x>240</x>
       <y>120</y>
       <width>51</width>
       <height>31</height>
@@ -82,8 +82,8 @@
    <widget class="QTextEdit" name="textEdit_message">
     <property name="geometry">
      <rect>
-      <x>150</x>
-      <y>310</y>
+      <x>240</x>
+      <y>290</y>
       <width>231</width>
       <height>81</height>
      </rect>
@@ -92,8 +92,8 @@
    <widget class="QLabel" name="label_5">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>290</y>
+      <x>240</x>
+      <y>250</y>
       <width>71</width>
       <height>41</height>
      </rect>
@@ -105,10 +105,10 @@
    <widget class="QLabel" name="label_6">
     <property name="geometry">
      <rect>
-      <x>980</x>
-      <y>290</y>
-      <width>131</width>
-      <height>21</height>
+      <x>830</x>
+      <y>370</y>
+      <width>151</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
@@ -118,8 +118,8 @@
    <widget class="QTextEdit" name="textEdit_ciphertext">
     <property name="geometry">
      <rect>
-      <x>1150</x>
-      <y>290</y>
+      <x>830</x>
+      <y>410</y>
       <width>241</width>
       <height>81</height>
      </rect>
@@ -128,10 +128,10 @@
    <widget class="QLabel" name="label_7">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>390</y>
+      <x>240</x>
+      <y>380</y>
       <width>71</width>
-      <height>41</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
@@ -141,8 +141,8 @@
    <widget class="QTextEdit" name="textEdit_digest">
     <property name="geometry">
      <rect>
-      <x>150</x>
-      <y>400</y>
+      <x>240</x>
+      <y>410</y>
       <width>231</width>
       <height>81</height>
      </rect>
@@ -151,10 +151,10 @@
    <widget class="QLabel" name="label_8">
     <property name="geometry">
      <rect>
-      <x>990</x>
-      <y>390</y>
-      <width>121</width>
-      <height>31</height>
+      <x>1130</x>
+      <y>370</y>
+      <width>131</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
@@ -164,7 +164,7 @@
    <widget class="QTextEdit" name="textEdit_encryptedKey">
     <property name="geometry">
      <rect>
-      <x>1150</x>
+      <x>1130</x>
       <y>410</y>
       <width>241</width>
       <height>81</height>
@@ -174,8 +174,8 @@
    <widget class="QTextEdit" name="textEdit_signature">
     <property name="geometry">
      <rect>
-      <x>600</x>
-      <y>400</y>
+      <x>530</x>
+      <y>410</y>
       <width>241</width>
       <height>81</height>
      </rect>
@@ -184,8 +184,8 @@
    <widget class="QLabel" name="label_9">
     <property name="geometry">
      <rect>
-      <x>510</x>
-      <y>400</y>
+      <x>530</x>
+      <y>380</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -197,21 +197,21 @@
    <widget class="QLabel" name="label_10">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>650</y>
-      <width>71</width>
+      <x>240</x>
+      <y>670</y>
+      <width>211</width>
       <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>原始消息</string>
+     <string>恢复得到原始消息</string>
     </property>
    </widget>
    <widget class="QTextEdit" name="textEdit_recoveredMessage">
     <property name="geometry">
      <rect>
-      <x>150</x>
-      <y>670</y>
+      <x>240</x>
+      <y>700</y>
       <width>241</width>
       <height>81</height>
      </rect>
@@ -220,8 +220,8 @@
    <widget class="QTextEdit" name="textEdit_recoveredKey">
     <property name="geometry">
      <rect>
-      <x>150</x>
-      <y>570</y>
+      <x>240</x>
+      <y>580</y>
       <width>241</width>
       <height>81</height>
      </rect>
@@ -230,21 +230,21 @@
    <widget class="QLabel" name="label_12">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>570</y>
-      <width>131</width>
-      <height>41</height>
+      <x>240</x>
+      <y>550</y>
+      <width>181</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>解密对称密钥K</string>
+     <string>解密得到对称密钥K</string>
     </property>
    </widget>
    <widget class="QTextEdit" name="textEdit_recoveredSignature">
     <property name="geometry">
      <rect>
-      <x>150</x>
-      <y>760</y>
+      <x>240</x>
+      <y>820</y>
       <width>241</width>
       <height>81</height>
      </rect>
@@ -253,34 +253,34 @@
    <widget class="QLabel" name="label_15">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>740</y>
-      <width>91</width>
-      <height>51</height>
+      <x>240</x>
+      <y>790</y>
+      <width>161</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>哈希签名结果</string>
+     <string>恢复得到哈希签名</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_16">
     <property name="geometry">
      <rect>
-      <x>490</x>
-      <y>640</y>
-      <width>221</width>
-      <height>41</height>
+      <x>540</x>
+      <y>670</y>
+      <width>211</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>根据解密消息再次计算哈希</string>
+     <string>根据恢复消息计算哈希</string>
     </property>
    </widget>
    <widget class="QTextEdit" name="textEdit_recoveredDigest">
     <property name="geometry">
      <rect>
-      <x>730</x>
-      <y>760</y>
+      <x>540</x>
+      <y>820</y>
       <width>241</width>
       <height>81</height>
      </rect>
@@ -289,10 +289,10 @@
    <widget class="QLabel" name="label_17">
     <property name="geometry">
      <rect>
-      <x>490</x>
-      <y>740</y>
-      <width>201</width>
-      <height>41</height>
+      <x>540</x>
+      <y>790</y>
+      <width>231</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
@@ -302,8 +302,8 @@
    <widget class="QTextEdit" name="textEdit_recaculatedDigest">
     <property name="geometry">
      <rect>
-      <x>730</x>
-      <y>670</y>
+      <x>540</x>
+      <y>700</y>
       <width>241</width>
       <height>81</height>
      </rect>
@@ -312,7 +312,7 @@
    <widget class="QTextEdit" name="textEdit_a_pu">
     <property name="geometry">
      <rect>
-      <x>180</x>
+      <x>240</x>
       <y>30</y>
       <width>241</width>
       <height>81</height>
@@ -322,7 +322,7 @@
    <widget class="QTextEdit" name="textEdit_a_pr">
     <property name="geometry">
      <rect>
-      <x>180</x>
+      <x>240</x>
       <y>150</y>
       <width>241</width>
       <height>81</height>
@@ -332,7 +332,7 @@
    <widget class="QTextEdit" name="textEdit_b_pu">
     <property name="geometry">
      <rect>
-      <x>600</x>
+      <x>710</x>
       <y>30</y>
       <width>241</width>
       <height>81</height>
@@ -342,7 +342,7 @@
    <widget class="QTextEdit" name="textEdit_b_pr">
     <property name="geometry">
      <rect>
-      <x>600</x>
+      <x>710</x>
       <y>150</y>
       <width>241</width>
       <height>81</height>
@@ -352,7 +352,7 @@
    <widget class="QTextEdit" name="textEdit_k">
     <property name="geometry">
      <rect>
-      <x>1020</x>
+      <x>1200</x>
       <y>30</y>
       <width>241</width>
       <height>81</height>
@@ -362,7 +362,7 @@
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>600</x>
+      <x>710</x>
       <y>0</y>
       <width>71</width>
       <height>31</height>
@@ -375,7 +375,7 @@
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>600</x>
+      <x>710</x>
       <y>120</y>
       <width>51</width>
       <height>31</height>
@@ -388,8 +388,8 @@
    <widget class="QPushButton" name="pushButton_crypto">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>220</y>
+      <x>80</x>
+      <y>290</y>
       <width>141</width>
       <height>51</height>
      </rect>
@@ -401,8 +401,8 @@
    <widget class="QPushButton" name="pushButton_decrypto">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>500</y>
+      <x>80</x>
+      <y>580</y>
       <width>141</width>
       <height>51</height>
      </rect>
@@ -414,10 +414,10 @@
    <widget class="QRadioButton" name="radioButton_sha1">
     <property name="geometry">
      <rect>
-      <x>1330</x>
-      <y>50</y>
-      <width>69</width>
-      <height>15</height>
+      <x>1080</x>
+      <y>160</y>
+      <width>81</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
@@ -427,10 +427,10 @@
    <widget class="QRadioButton" name="radioButton_md5">
     <property name="geometry">
      <rect>
-      <x>1330</x>
-      <y>70</y>
-      <width>69</width>
-      <height>15</height>
+      <x>1080</x>
+      <y>200</y>
+      <width>81</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
@@ -440,10 +440,10 @@
    <widget class="QRadioButton" name="radioButton_aes">
     <property name="geometry">
      <rect>
-      <x>1330</x>
-      <y>140</y>
-      <width>69</width>
-      <height>15</height>
+      <x>1300</x>
+      <y>160</y>
+      <width>81</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
@@ -453,14 +453,53 @@
    <widget class="QRadioButton" name="radioButton_des">
     <property name="geometry">
      <rect>
-      <x>1330</x>
-      <y>160</y>
-      <width>69</width>
-      <height>15</height>
+      <x>1300</x>
+      <y>200</y>
+      <width>81</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
      <string>DES</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_11">
+    <property name="geometry">
+     <rect>
+      <x>1200</x>
+      <y>0</y>
+      <width>71</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>对称密钥</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_13">
+    <property name="geometry">
+     <rect>
+      <x>1030</x>
+      <y>130</y>
+      <width>71</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>哈希算法</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_14">
+    <property name="geometry">
+     <rect>
+      <x>1200</x>
+      <y>130</y>
+      <width>71</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>对称加密算法</string>
     </property>
    </widget>
   </widget>
@@ -469,7 +508,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1471</width>
+     <width>1518</width>
      <height>17</height>
     </rect>
    </property>
