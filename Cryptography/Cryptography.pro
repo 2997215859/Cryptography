@@ -35,15 +35,17 @@ FORMS += \
 INCLUDEPATH += .\include\
 
 QMAKE_CXXFLAGS_DEBUG += /MDd
-QMAKE_CXXFLAGS_RELEASE += /MDd
+QMAKE_CXXFLAGS_RELEASE += /MD
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/lib/DLL_Output/release/ -lcryptlib
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/lib/DLL_Output/debug/ -lcryptlib
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/lib/Output/release/ -lcryptlib
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/lib/Output/debug/ -lcryptlib
+else:unix: LIBS += -L$$PWD/lib/Output/ -lcryptlib
 
-INCLUDEPATH += $$PWD/lib/DLL_Output/Release
-DEPENDPATH += $$PWD/lib/DLL_Output/Release
+INCLUDEPATH += $$PWD/lib/Output/Debug
+DEPENDPATH += $$PWD/lib/Output/Debug
 
-win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/lib/DLL_Output/release/libcryptlib.a
-else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/lib/DLL_Output/debug/libcryptlib.a
-else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/lib/DLL_Output/release/cryptlib.lib
-else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/lib/DLL_Output/debug/cryptlib.lib
+win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/lib/Output/release/libcryptlib.a
+else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/lib/Output/debug/libcryptlib.a
+else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/lib/Output/release/cryptlib.lib
+else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/lib/Output/debug/cryptlib.lib
+else:unix: PRE_TARGETDEPS += $$PWD/lib/Output/libcryptlib.a
