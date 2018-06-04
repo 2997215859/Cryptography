@@ -27,7 +27,23 @@ SOURCES += \
         mainwindow.cpp
 
 HEADERS += \
-        mainwindow.h
+        mainwindow.h \
 
 FORMS += \
         mainwindow.ui
+
+INCLUDEPATH += .\include\
+
+QMAKE_CXXFLAGS_DEBUG += /MDd
+QMAKE_CXXFLAGS_RELEASE += /MDd
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/lib/DLL_Output/release/ -lcryptlib
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/lib/DLL_Output/debug/ -lcryptlib
+
+INCLUDEPATH += $$PWD/lib/DLL_Output/Release
+DEPENDPATH += $$PWD/lib/DLL_Output/Release
+
+win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/lib/DLL_Output/release/libcryptlib.a
+else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/lib/DLL_Output/debug/libcryptlib.a
+else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/lib/DLL_Output/release/cryptlib.lib
+else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/lib/DLL_Output/debug/cryptlib.lib
